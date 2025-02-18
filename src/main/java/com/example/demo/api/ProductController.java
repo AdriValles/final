@@ -4,8 +4,9 @@ import java.util.List;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.api.request.ProductCreationRequest;
-import com.example.demo.models.User;
-import com.example.demo.services.UserService;
+import com.example.demo.models.Product;
+import com.example.demo.services.ProductService;
+
 
 
 
@@ -14,29 +15,29 @@ import com.example.demo.services.UserService;
 @CrossOrigin(origins = "*")
 public class ProductController {
 
-    private final productServiceService productService;
+    private final ProductService productService;
 
     public ProductController(ProductService productService){
         this.productService = productService;
     }
 
     @PostMapping
-    public User createProduct(@RequestBody ProductCreationRequest productCreationRequest){
+    public Product createProduct(@RequestBody ProductCreationRequest productCreationRequest){
         return productService.createProduct(productCreationRequest);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id){
+    public void deleteProduct(@PathVariable Long id){
         productService.removeProduct(id);
     }
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable Long id){
+    public Product getProduct(@PathVariable Long id){
         return productService.getProduct(id).orElse(null);
     }
 
     @GetMapping("/getall")
-    public List<User> getAllUsers(){
+    public List<Product> getAllProducts(){
         return productService.getAllProducts();
     }
 
