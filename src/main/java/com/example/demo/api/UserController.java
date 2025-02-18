@@ -21,7 +21,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestAttribute UserCreationRequest userCreationRequest){
+    public User createUser(@RequestBody UserCreationRequest userCreationRequest){
         return userService.createUser(userCreationRequest);
     }
 
@@ -39,4 +39,7 @@ public class UserController {
     public List<User> getAllUsers(){
         return userService.getAllUsers();
     }
+
+    
+
 }
