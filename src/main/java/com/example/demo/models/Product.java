@@ -1,16 +1,18 @@
 package com.example.demo.models;
 
 import jakarta.persistence.*;
+import java.util.List;
 import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "Producto")
 public class Product {
     @Id
-    @GeneratedValue(strategy  = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column( name = "nombreProducto")
+    @Column(name = "nombreProducto")
     private String nombre;
 
     @Column(name = "descripcion")
@@ -24,6 +26,20 @@ public class Product {
 
     @Column(name = "imagen")
     private String imagen;
+
+    @ManyToMany(mappedBy = "productos")
+    @JsonBackReference
+    private List<User> usuarios;
+
+    @ManyToMany
+    @JoinTable(
+        name = "PurchaseOrder_Product",
+        joinColumns = @JoinColumn(name = "product_id"),
+        inverseJoinColumns = @JoinColumn(name = "purchase_order_id")
+    )
+    @JsonBackReference
+    private List<PurchaseOrder> purchaseOrders;
+
 
     @Override
     public int hashCode() {
@@ -110,6 +126,19 @@ public class Product {
         this.imagen = imagen;
     }
 
-    
-    
+    public List<User> getUsuarios() {
+        return usuarios;
+    }
+
+    public void setUsuarios(List<User> usuarios) {
+        this.usuarios = usuarios;
+    }
+
+    public List<PurchaseOrder> getPurchaseOrders() {
+        return purchaseOrders;
+    }
+
+    public void setPurchaseOrders(List<PurchaseOrder> purchaseOrders) {
+        this.purchaseOrders = purchaseOrders;
+    }
 }

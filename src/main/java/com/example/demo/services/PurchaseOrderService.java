@@ -3,7 +3,9 @@ package com.example.demo.services;
 import org.springframework.stereotype.Service;
 import com.example.demo.api.request.PurchaseOrderCreationRequest;
 import com.example.demo.models.PurchaseOrder;
+import com.example.demo.models.User;
 import com.example.demo.repository.PurchaseOrderRepository;
+import com.example.demo.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,9 +13,11 @@ import java.util.Optional;
 public class PurchaseOrderService {
 
     private final PurchaseOrderRepository purchaseOrderRepository;
+    private final UserRepository userRepository;
 
-    public PurchaseOrderService(PurchaseOrderRepository purchaseOrderRepository) {
+    public PurchaseOrderService(PurchaseOrderRepository purchaseOrderRepository, UserRepository userRepository) {
         this.purchaseOrderRepository = purchaseOrderRepository;
+        this.userRepository = userRepository;
     }
 
     public PurchaseOrder createPurchaseOrder(PurchaseOrderCreationRequest purchaseOrderCreationRequest) {
@@ -26,7 +30,15 @@ public class PurchaseOrderService {
         purchaseOrder.setDescripcion(createRequest.descripcion());
         purchaseOrder.setTotal(createRequest.total());
         purchaseOrder.setEstado(createRequest.estado());
-        purchaseOrder.setUsuario(createRequest.usuario());
+
+        // Obtener el usuario por ID
+        Optional<User> usuarioOpt = userRepository.findById(createRequest.usuarioId());
+        if (usuarioOpt.isPresent()) {
+            purchaseOrder.setUsuario(usuarioOpt.get());
+        } else {
+            throw new RuntimeException("Usuario no encontrado");
+        }
+
         return purchaseOrder;
     }
 

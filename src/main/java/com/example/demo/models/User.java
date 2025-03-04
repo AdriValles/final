@@ -1,16 +1,18 @@
 package com.example.demo.models;
 
 import jakarta.persistence.*;
+import java.util.List;
 import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "User")
 public class User {
     @Id
-    @GeneratedValue(strategy  = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column( name = "nombre")
+    @Column(name = "nombre")
     private String nombre;
 
     @Column(name = "contrasena")
@@ -21,6 +23,18 @@ public class User {
 
     @Column(name = "administrador")
     private boolean administrador;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<PurchaseOrder> purchaseOrders;
+
+    @ManyToMany
+    @JoinTable(
+        name = "User_Product",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> productos;
 
 
     @Override
@@ -49,7 +63,6 @@ public class User {
     }
 
     public User() {
-        //TODO Auto-generated constructor stub
     }
 
     public Long getId() {
@@ -92,6 +105,19 @@ public class User {
         this.administrador = administrador;
     }
 
-   
+    public List<PurchaseOrder> getPurchaseOrders() {
+        return purchaseOrders;
+    }
 
+    public void setPurchaseOrders(List<PurchaseOrder> purchaseOrders) {
+        this.purchaseOrders = purchaseOrders;
+    }
+
+    public List<Product> getProductos() {
+        return productos;
+    }
+
+    public void setProductos(List<Product> productos) {
+        this.productos = productos;
+    }
 }

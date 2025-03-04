@@ -1,15 +1,19 @@
 package com.example.demo.models;
+
 import jakarta.persistence.*;
+import java.util.List;
 import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "Pedido")
 public class PurchaseOrder {
     @Id
-    @GeneratedValue(strategy  = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column( name = "numeroPedido")
+    @Column(name = "numeroPedido")
     private Long numeroPedido;
 
     @Column(name = "descripcion")
@@ -21,8 +25,15 @@ public class PurchaseOrder {
     @Column(name = "estado")
     private String estado;
 
-    @Column(name = "usuario")
-    private String usuario;
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    @JsonBackReference
+    private User usuario;
+
+    @ManyToMany(mappedBy = "purchaseOrders")
+    @JsonManagedReference
+    private List<Product> productos;
+
 
     @Override
     public int hashCode() {
@@ -49,7 +60,7 @@ public class PurchaseOrder {
         return true;
     }
 
-    public PurchaseOrder(Long id, Long numeroPedido, String descripcion, double total, String estado, String usuario) {
+    public PurchaseOrder(Long id, Long numeroPedido, String descripcion, double total, String estado, User usuario) {
         this.id = id;
         this.numeroPedido = numeroPedido;
         this.descripcion = descripcion;
@@ -101,14 +112,19 @@ public class PurchaseOrder {
         this.estado = estado;
     }
 
-    public String getUsuario() {
+    public User getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(String usuario) {
+    public void setUsuario(User usuario) {
         this.usuario = usuario;
     }
 
-    
+    public List<Product> getProductos() {
+        return productos;
+    }
 
+    public void setProductos(List<Product> productos) {
+        this.productos = productos;
+    }
 }
