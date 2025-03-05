@@ -60,19 +60,15 @@ public class PurchaseOrderService {
             }
 
             // Crear detalle
-            OrderDetail detail = new OrderDetail();
-            detail.setPedido(purchaseOrder);
-            detail.setProducto(product);
-            detail.setCantidad(detailRequest.cantidad());
-            detail.setPrecioUnitario(product.getPrecio());
-            orderDetailRepository.save(detail);
+            OrderDetail detail = new OrderDetail(purchaseOrder, product, detailRequest.cantidad());
+            detail = orderDetailRepository.save(detail);
 
             // Actualizar stock
             product.setStock(product.getStock() - detailRequest.cantidad());
             productRepository.save(product);
 
             // Actualizar total
-            total += detail.getPrecioUnitario() * detail.getCantidad();
+            total += detail.getSubtotal();
         }
 
         // Actualizar total del pedido
