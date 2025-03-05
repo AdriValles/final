@@ -1,6 +1,7 @@
 package com.example.demo.models;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -25,15 +26,39 @@ public class PurchaseOrder {
     @Column(name = "estado")
     private String estado;
 
-    @ManyToOne
-    @JoinColumn(name = "usuario_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
-    private User usuario;
+    private User user;
 
-    @ManyToMany(mappedBy = "purchaseOrders")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "PedidoProducto",
+        joinColumns = @JoinColumn(name = "pedido_id"),
+        inverseJoinColumns = @JoinColumn(name = "producto_id")
+    )
+    private List<Product> productos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<Product> productos;
+    private List<OrderDetail> orderDetails = new ArrayList<>();
 
+    // Añadir getters y setters
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<Product> getProductos() {
+        return productos;
+    }
+
+    public void setProductos(List<Product> productos) {
+        this.productos = productos;
+    }
 
     @Override
     public int hashCode() {
@@ -60,16 +85,19 @@ public class PurchaseOrder {
         return true;
     }
 
-    public PurchaseOrder(Long id, Long numeroPedido, String descripcion, double total, String estado, User usuario) {
+    public PurchaseOrder() {
+        this.productos = new ArrayList<>();
+        this.orderDetails = new ArrayList<>();
+    }
+
+    public PurchaseOrder(Long id, Long numeroPedido, String descripcion, double total, String estado) {
         this.id = id;
         this.numeroPedido = numeroPedido;
         this.descripcion = descripcion;
         this.total = total;
         this.estado = estado;
-        this.usuario = usuario;
-    }
-
-    public PurchaseOrder() {
+        this.productos = new ArrayList<>();
+        this.orderDetails = new ArrayList<>();
     }
 
     public Long getId() {
@@ -112,19 +140,11 @@ public class PurchaseOrder {
         this.estado = estado;
     }
 
-    public User getUsuario() {
-        return usuario;
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
     }
 
-    public void setUsuario(User usuario) {
-        this.usuario = usuario;
-    }
-
-    public List<Product> getProductos() {
-        return productos;
-    }
-
-    public void setProductos(List<Product> productos) {
-        this.productos = productos;
+    public void setOrderDetails(List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
     }
 }

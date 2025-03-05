@@ -1,9 +1,11 @@
 package com.example.demo.models;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "Producto")
@@ -29,17 +31,11 @@ public class Product {
 
     @ManyToMany(mappedBy = "productos")
     @JsonBackReference
-    private List<User> usuarios;
+    private List<PurchaseOrder> pedidos = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-        name = "PurchaseOrder_Product",
-        joinColumns = @JoinColumn(name = "product_id"),
-        inverseJoinColumns = @JoinColumn(name = "purchase_order_id")
-    )
-    @JsonBackReference
-    private List<PurchaseOrder> purchaseOrders;
-
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<OrderDetail> orderDetails = new ArrayList<>();
 
     @Override
     public int hashCode() {
@@ -66,6 +62,11 @@ public class Product {
         return true;
     }
 
+    public Product() {
+        this.pedidos = new ArrayList<>();
+        this.orderDetails = new ArrayList<>();
+    }
+
     public Product(Long id, String nombre, String descripcion, double precio, int stock, String imagen) {
         this.id = id;
         this.nombre = nombre;
@@ -73,9 +74,8 @@ public class Product {
         this.precio = precio;
         this.stock = stock;
         this.imagen = imagen;
-    }
-
-    public Product() {
+        this.pedidos = new ArrayList<>();
+        this.orderDetails = new ArrayList<>();
     }
 
     public Long getId() {
@@ -126,19 +126,19 @@ public class Product {
         this.imagen = imagen;
     }
 
-    public List<User> getUsuarios() {
-        return usuarios;
+    public List<PurchaseOrder> getPedidos() {
+        return pedidos;
     }
 
-    public void setUsuarios(List<User> usuarios) {
-        this.usuarios = usuarios;
+    public void setPedidos(List<PurchaseOrder> pedidos) {
+        this.pedidos = pedidos;
     }
 
-    public List<PurchaseOrder> getPurchaseOrders() {
-        return purchaseOrders;
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
     }
 
-    public void setPurchaseOrders(List<PurchaseOrder> purchaseOrders) {
-        this.purchaseOrders = purchaseOrders;
+    public void setOrderDetails(List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
     }
 }

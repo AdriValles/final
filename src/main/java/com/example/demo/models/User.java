@@ -24,18 +24,18 @@ public class User {
     @Column(name = "administrador")
     private boolean administrador;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<PurchaseOrder> purchaseOrders;
+    private List<PurchaseOrder> pedidos;
 
-    @ManyToMany
-    @JoinTable(
-        name = "User_Product",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private List<Product> productos;
+    // Añadir getter y setter para pedidos
+    public List<PurchaseOrder> getPedidos() {
+        return pedidos;
+    }
 
+    public void setPedidos(List<PurchaseOrder> pedidos) {
+        this.pedidos = pedidos;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -105,19 +105,5 @@ public class User {
         this.administrador = administrador;
     }
 
-    public List<PurchaseOrder> getPurchaseOrders() {
-        return purchaseOrders;
-    }
-
-    public void setPurchaseOrders(List<PurchaseOrder> purchaseOrders) {
-        this.purchaseOrders = purchaseOrders;
-    }
-
-    public List<Product> getProductos() {
-        return productos;
-    }
-
-    public void setProductos(List<Product> productos) {
-        this.productos = productos;
-    }
+ 
 }
